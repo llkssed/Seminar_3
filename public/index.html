@@ -464,7 +464,7 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ message }),
+          body: JSON.stringify({ message, userId: 1 }),
         })
 
         const data = await response.json()
@@ -483,6 +483,7 @@
         sendBtn.textContent = 'Отправить'
         messageInput.focus()
       }
+      
     }
 
     sendBtn.addEventListener('click', sendMessage)
