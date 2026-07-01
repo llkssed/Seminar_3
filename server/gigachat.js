@@ -49,22 +49,20 @@ async function getAccessToken() {
   return cachedToken
 }
 
-export async function askGigaChat(userMessage) {
+export async function askGigaChat(userMessage, context = '') {
   const token = await getAccessToken()
+
+  const systemContent = context
+    ? `Ты полезный ассистент эко-платформы. Данные о пользователе: ${context} Отвечай понятно и по делу.`
+    : 'Ты полезный ассистент. Отвечай понятно и по делу.'
 
   const response = await axios.post(
     'https://gigachat.devices.sberbank.ru/api/v1/chat/completions',
     {
       model: 'GigaChat',
       messages: [
-        {
-          role: 'system',
-          content: 'Ты полезный ассистент. Отвечай понятно и по делу.',
-        },
-        {
-          role: 'user',
-          content: userMessage,
-        },
+        { role: 'system', content: systemContent },
+        { role: 'user', content: userMessage },
       ],
       temperature: 0.7,
       max_tokens: 300,
@@ -76,9 +74,7 @@ export async function askGigaChat(userMessage) {
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
+      httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     }
   )
 
